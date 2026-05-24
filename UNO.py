@@ -58,3 +58,92 @@ class game:
         for color in colors:
             for value in values:
                 self.deck.append(card(color,value))
+                self.deck.append(card(color,value))#insdfjkm
+        
+        random.shuffle(self.deck)#fdnjic
+
+        self.player_hand = []#sbfudhjni
+        self.ai_hand = []
+
+        for i in range(7):
+            self.player_hand.append(self.draw_card())
+            self.ai_hand.append(self.draw_card())
+        
+        self.top_card = (self.draw_card)
+
+    def draw_card(self):
+        if len(self.deck) == 0:
+            return None
+        return self.deck.pop()#fdjsok
+    
+    def get_image_path(self, card): #dsinjkm
+        value = card.value
+        if value =="+2":
+            value = "draw_2"
+        
+        filename = (card.color + "_" + value + ".jpg")
+        return "cards/" + filename
+    
+    def update_screen(self): #fgnuij
+        self.top_card_text.value = ("Top Card: " + str(self.top_card))
+        self.ai_text.value = ("AI has " + str(len(self.ai_hand))+ " cards")
+
+        self.top_card_image.src = (self.get_image_path(self.top_card))
+        self.player_cards_row.controls.clear()
+
+        for index, card in enumerate(self.player_hand):#dsfuihj
+
+            card_button = ft.Container(width=140, height=210, border_radius=15, ink=True,on_click=lambda e,i=index:self.play_card(i),content=ft.Image(src=self.get_image_path(card),fit="contain",),)#gdhufijo
+
+            self.player_cards_row.controls.append(card_button)
+
+        self.page.update()
+
+    def play_card(self, index):#fsndijk
+        chosen_card = (self.player_hand[index])#fsijndk
+
+        # Invalid move
+        if not chosen_card.can_play(self.top_card):
+            self.show_message("Invalid move!")
+            return
+
+        
+        self.player_hand.pop(index)#fsdjk
+        self.top_card = chosen_card
+
+        if chosen_card.value == "+2":
+            for i in range(2):
+                new_card = (self.draw_card())#gjfdn
+
+                if new_card:
+                    self.ai_hand.append(new_card)
+
+ 
+        if chosen_card.value == "Skip":
+
+            self.show_message("AI skipped!")
+
+        if len(self.player_hand) == 0:
+            self.show_message("YOU WIN!")
+            self.restart_game(None)
+            return
+        
+        self.update_screen()
+        self.ai_turn()
+
+        def draw_card_button(self, e):#fdgshjk
+            new_card = self.draw_card()
+
+            if new_card:
+                self.player_hand.append(new_card)
+
+            self.update_screen()
+
+            self.ai_turn()
+        
+        
+
+
+
+    
+        
