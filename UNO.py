@@ -6,22 +6,24 @@ values = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Skip" , "+2"]
 
 class card:
     def __init__(self, color, value):
-        self.color = color
-        self.value = value
-    
-    def can_play(self, top_card):
-        same_color = (self.color == top_card.color)
-        same_value = (self.value == top_card.value)
-        
-        return same_color or same_value
+         self.color = color
+         self.value = value
+
+    # check if card can be played
+    def can_play(self, other):
+
+        if self.color == other.color:
+            return True
+
+        if self.value == other.value:
+            return True
+
+        return False
     
     def __str__(self):
 
-        return (
-            self.color
-            + " "
-            + self.value
-        )
+        return self.color + " " + self.value
+
 
 class game:
     
@@ -36,7 +38,7 @@ class game:
 
         page.bgcolor = "#1E1E1E"
 
-        self.start_new_game()
+        self.new_game()
 
         self.title_text = ft.Text("UNO", size=40, weight="bold", color="white",)
 
@@ -69,7 +71,7 @@ class game:
             self.player_hand.append(self.draw_card())
             self.ai_hand.append(self.draw_card())
         
-        self.top_card = (self.draw_card)
+        self.top_card = self.draw_card()
 
     def draw_card(self):
         if len(self.deck) == 0:
@@ -79,7 +81,7 @@ class game:
     def get_image_path(self, card): #dsinjkm
         value = card.value
         if value =="+2":
-            value = "draw_2"
+            value = "Draw_2"
         
         filename = (card.color + "_" + value + ".jpg")
         return "cards/" + filename
@@ -140,8 +142,57 @@ class game:
             self.update_screen()
 
             self.ai_turn()
+
+        def ai_turn(self):
+            playable_cards = []
+
+            for card1 in self.ai_hand:
+                if card1.can_play(self.top_card):
+                    playable_cards.append(card1)
+
         
+        if len(playable_cards) > 0:
+            chosen_card = random.choice(playable_cards)
+            self.ai_hand.remove(chosen_card)
+            self.top_card = chosen_card
+
+            if chosen_card.value == "+2":
+                for i in range(2):
+                    new_card = self.draw_card()
+
+                    if new_card:
+                        self.player_hand.append(new_card)
+            
+            if chosen_card.value == "Skip":
+
+                self.show_message("You skipped!")
+
+            self.show_message("AI played "+ str(chosen_card))
+
+            # ai win
+            if len(self.ai_hand) == 0:
+                self.show_message("AI WINS!")
+                self.restart_game(None)
+                return
+            
+        else: 
+            new_card = self.draw_card()
+
+            if new_card:
+                self.ai_hand.append("AI drew a casd")
         
+        self.update_screen()
+        
+
+        
+
+                    
+
+
+        
+
+        
+
 
 
 
