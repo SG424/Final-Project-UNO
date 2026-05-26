@@ -53,7 +53,9 @@ class game:
         self.draw_button = ft.Button(content=ft.Text("Draw Card", size=20, color="white",), width=200, height=60,on_click=self.draw_card_button,)
             
         self.restart_button = ft.Button(content=ft.Text("Restart", size=20, color="white",),width=200, height=60, on_click=self.restart_game,)
-    
+        page.add(self.title_text, self.top_card_text, self.ai_text, ft.Row(controls=[self.top_card_image, ft.Column(controls=[self.draw_button, self.restart_button,])], alignment="center",), ft.Text("YOUR CARDS", size=30, color="white",), self.player_cards_row,)
+        self.update_screen()
+
     def new_game(self):
         self.deck = []
 
@@ -133,7 +135,7 @@ class game:
         self.update_screen()
         self.ai_turn()
 
-        def draw_card_button(self, e):#fdgshjk
+    def draw_card_button(self, e):#fdgshjk
             new_card = self.draw_card()
 
             if new_card:
@@ -143,7 +145,7 @@ class game:
 
             self.ai_turn()
 
-        def ai_turn(self):
+    def ai_turn(self):
             playable_cards = []
 
             for card1 in self.ai_hand:
@@ -151,38 +153,60 @@ class game:
                     playable_cards.append(card1)
 
         
-        if len(playable_cards) > 0:
-            chosen_card = random.choice(playable_cards)
-            self.ai_hand.remove(chosen_card)
-            self.top_card = chosen_card
+            if len(playable_cards) > 0:
+                chosen_card = random.choice(playable_cards)
+                self.ai_hand.remove(chosen_card)
+                self.top_card = chosen_card
 
-            if chosen_card.value == "+2":
-                for i in range(2):
-                    new_card = self.draw_card()
+                if chosen_card.value == "+2":
+                    for i in range(2):
+                        new_card = self.draw_card()
 
-                    if new_card:
-                        self.player_hand.append(new_card)
+                        if new_card:
+                            self.player_hand.append(new_card)
+                
+                if chosen_card.value == "Skip":
+
+                    self.show_message("You skipped!")
+
+                self.show_message("AI played "+ str(chosen_card))
+
+                # ai win
+                if len(self.ai_hand) == 0:
+                    self.show_message("AI WINS!")
+                    self.restart_game(None)
+                    return
+                
+            else: 
+                new_card = self.draw_card()
+
+                if new_card:
+                    self.ai_hand.append("AI drew a casd")
             
-            if chosen_card.value == "Skip":
+            self.update_screen()
 
-                self.show_message("You skipped!")
-
-            self.show_message("AI played "+ str(chosen_card))
-
-            # ai win
-            if len(self.ai_hand) == 0:
-                self.show_message("AI WINS!")
-                self.restart_game(None)
-                return
-            
-        else: 
-            new_card = self.draw_card()
-
-            if new_card:
-                self.ai_hand.append("AI drew a casd")
-        
+    def restart_game(self, e):
+        self.new_game()
         self.update_screen()
         
+    def show_message(self, text):
+
+        self.page.snack_bar = ft.SnackBar(content=ft.Text(text))
+
+        self.page.snack_bar.open = True
+
+        self.update_screen()
+    
+
+    
+def main(page): game(page)
+
+
+# start app
+ft.run(main,assets_dir="assets")
+
+
+    
 
         
 
