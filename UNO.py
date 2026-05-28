@@ -279,9 +279,6 @@ def show_menu(page):
     page.update()
 
 
-# ---------------------------
-# INSTRUCTIONS
-# ---------------------------
 
 def show_instructions(page):
 
@@ -323,10 +320,6 @@ def show_instructions(page):
 
     page.update()
 
-
-# ---------------------------
-# MODE SELECTION
-# ---------------------------
 
 def show_mode_selection(page):
 
