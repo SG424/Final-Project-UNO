@@ -171,17 +171,17 @@ class game:
 
                 self.show_message("AI played "+ str(chosen_card))
 
-                # ai win
+                
                 if len(self.ai_hand) == 0:
                     self.show_message("AI WINS!")
                     self.restart_game(None)
                     return
                 
-            else: 
+            else:
                 new_card = self.draw_card()
-
                 if new_card:
-                    self.ai_hand.append("AI drew a casd")
+                    self.ai_hand.append(new_card)
+                    self.show_message("AI drew a card")
             
             self.update_screen()
 
@@ -195,7 +195,7 @@ class game:
 
         self.page.snack_bar.open = True
 
-        self.update_screen()
+        self.page.update()
     
 
     
