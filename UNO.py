@@ -1,4 +1,5 @@
 import flet as ft
+import flet_audio as fta
 import random
 
 colors = ["Red", "Blue", "Green", "Yellow"]
@@ -8,8 +9,7 @@ class card:
     def __init__(self, color, value):
          self.color = color
          self.value = value
-
-    # check if card can be played
+        
     def can_play(self, other):
 
         if self.color == other.color:
@@ -57,7 +57,95 @@ class game:
         self.draw_button = ft.Button(content=ft.Text("Draw Card", size=20, color="white",), width=200, height=60,on_click=self.draw_card_button,)
             
         self.restart_button = ft.Button(content=ft.Text("Restart", size=20, color="white",),width=200, height=60, on_click=self.restart_game,)
-        page.add(self.title_text, self.turn_text, self.top_card_text, self.ai_text, ft.Row(controls=[self.top_card_image, ft.Column(controls=[self.draw_button, self.restart_button,])], alignment="center",), ft.Text("YOUR CARDS", size=30, color="white",), self.player_cards_row,)
+
+        
+
+        self.songs = [
+
+            {
+                "src": "music/Future - WAIT FOR U (Instrumental) ft. Drake, Tems.mp3",
+            },
+
+            {
+                "src": "music/SZA - Good Days (Instrumental).mp3",
+            },
+
+            {
+                "src": "music/SZA - Snooze (Instrumental (Audio)).mp3",
+            },
+        ]
+
+        self.song_index = 0
+
+        self.audio = fta.Audio(
+            src=self.songs[self.song_index]["src"],
+            autoplay=True,
+            volume=0.5,
+        )
+
+        page.overlay.append(self.audio)
+
+        self.is_muted = False
+
+        self.next_button = ft.IconButton(
+            icon=ft.Icons.SKIP_NEXT,
+            icon_color="white",
+            icon_size=35,
+            on_click=self.next_song,
+        )
+
+        self.mute_button = ft.IconButton(
+            icon=ft.Icons.VOLUME_UP,
+            icon_color="white",
+            icon_size=35,
+            on_click=self.toggle_mute,
+        )
+
+
+        page.add(
+            ft.Row(controls=[ft.Column(controls=[self.title_text, self.turn_text, self.top_card_text, self.ai_text, self.top_card_image,
+                                ft.Text(
+                                    "YOUR CARDS",
+                                    size=30,
+                                    color="white",
+                                ),
+
+                                self.player_cards_row,
+                            ],
+
+                            horizontal_alignment="center",
+                            spacing=20,
+                            expand=True,
+                        ),
+
+                        ft.Container(
+
+                            content=ft.Column(
+
+                                controls=[
+
+                                    self.draw_button,
+                                    self.restart_button,
+
+                                    ft.Container(height=50),
+
+                                    self.next_button,
+                                    self.mute_button,
+                                ],
+
+                                horizontal_alignment="center",
+                                spacing=25,
+                            ),
+
+                            padding=ft.padding.only(right=40, top=120),
+                        ),
+                    ],
+
+                    expand=True,
+                    alignment="spaceBetween",
+                    vertical_alignment="start",
+                )
+            )
         self.update_screen()
 
     def new_game(self):
@@ -86,17 +174,17 @@ class game:
     
     def get_current_hand(self):
 
-     if self.current_player == 1:
-        return self.player1_hand
+        if self.current_player == 1:
+            return self.player1_hand
 
-     return self.player2_hand
-    
+        return self.player2_hand
+        
     def switch_turn(self):
 
-     if self.current_player == 1:
-        self.current_player = 2
-     else:
-        self.current_player = 1
+        if self.current_player == 1:
+            self.current_player = 2
+        else:
+            self.current_player = 1
 
     
     def get_image_path(self, card): #dsinjkm
@@ -119,7 +207,7 @@ class game:
 
         current_hand = self.get_current_hand()
 
-        for index, card in enumerate(current_hand):
+        for index, card in enumerate(current_hand):#sfdnjkm
 
             card_button = ft.Container(width=140, height=210, border_radius=15, ink=True,on_click=lambda e,i=index:self.play_card(i),content=ft.Image(src=self.get_image_path(card),fit="contain",),)#gdhufijo
 
@@ -235,13 +323,44 @@ class game:
         self.update_screen()
         
     def show_message(self, text):
-
+        
         self.page.snack_bar = ft.SnackBar(content=ft.Text(text))
 
         self.page.snack_bar.open = True
 
         self.page.update()
+
+
+    def next_song(self, e):
+        self.song_index += 1
+
+        if self.song_index >= len(self.songs):
+            self.song_index = 0
+
+        self.audio.src = self.songs[self.song_index]["src"]
+
+        self.audio.play()
+
+        self.page.update()
     
+    def toggle_mute(self, e):
+
+        self.is_muted = not self.is_muted
+
+        if self.is_muted:
+
+            self.audio.volume = 0
+
+            self.mute_button.icon = ft.Icons.VOLUME_OFF
+
+        else:
+
+            self.audio.volume = 0.5
+
+            self.mute_button.icon = ft.Icons.VOLUME_UP
+
+        self.page.update()
+
 def show_menu(page):
 
     page.controls.clear()
@@ -252,12 +371,12 @@ def show_menu(page):
         weight="bold",
     )
 
-    play_button = ft.ElevatedButton(
+    play_button = ft.Button(
         content=ft.Text("Start Game"),
         on_click=lambda e: show_mode_selection(page),
     )
 
-    instructions_button = ft.ElevatedButton(
+    instructions_button = ft.Button(
         content=ft.Text("Instructions"),
         on_click=lambda e: show_instructions(page),
     )
@@ -299,7 +418,7 @@ def show_instructions(page):
         size=18,
     )
 
-    back_button = ft.ElevatedButton(
+    back_button = ft.Button(
         content=ft.Text("Back"),
         on_click=lambda e: show_menu(page),
     )
@@ -331,21 +450,21 @@ def show_mode_selection(page):
         weight="bold",
     )
 
-    ai_button = ft.ElevatedButton(
+    ai_button = ft.Button(
         content=ft.Text("1 Player vs AI"),
         bgcolor="red",
         color="white",
         on_click=lambda e: game(page, "ai"),
     )
 
-    two_player_button = ft.ElevatedButton(
+    two_player_button = ft.Button(
         content=ft.Text("2 Players"),
         bgcolor="orange",
         color="white",
         on_click=lambda e: game(page, "2p"),
     )
 
-    back_button = ft.ElevatedButton(
+    back_button = ft.Button(
         content=ft.Text("Back"),
         on_click=lambda e: show_menu(page),
     )
