@@ -40,7 +40,7 @@ class game:
         
         page.window_height = 850
 
-        page.bgcolor = "#1E1E1E"
+        page.bgcolor = "#4749B5"
 
         self.new_game()
 
