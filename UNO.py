@@ -58,7 +58,7 @@ class game:
             
         self.restart_button = ft.Button(content=ft.Text("Restart", size=20, color="white",),width=200, height=60, on_click=self.restart_game,)
 
-
+        
 
         self.songs = [
 
@@ -79,11 +79,11 @@ class game:
 
         self.audio = fta.Audio(
         src=self.songs[self.song_index]["src"],
+        autoplay=True,
         volume=0.5,
     )
 
         self.page.add(self.audio)
-        self.page.run_task(self.start_music)
 
         self.is_muted = False
 
@@ -168,7 +168,7 @@ class game:
         self.top_card = self.draw_card()
 
     def draw_card(self):
-        while len(self.deck) == 0:
+        if len(self.deck) == 0:
             return None
         return self.deck.pop()#fdjsok
     
@@ -188,16 +188,13 @@ class game:
 
     
     def get_image_path(self, card): #dsinjkm
-        try: 
-            value = card.value
-            if value =="+2":
-                value = "Draw_2"
-            
-            filename = (card.color + "_" + value + ".jpg")
-            return "cards/" + filename
-        except:
-            return "cards/default.jpg"
-            
+        value = card.value
+        if value =="+2":
+            value = "Draw_2"
+        
+        filename = (card.color + "_" + value + ".jpg")
+        return "cards/" + filename
+    
     def update_screen(self): #fgnuij
         self.top_card_text.value = ("Top Card: " + str(self.top_card))
         if self.mode == "ai":
@@ -332,10 +329,9 @@ class game:
         self.page.snack_bar.open = True
 
         self.page.update()
-    async def start_music(self):
-            await self.audio.play()
 
-    async def next_song(self, e):
+
+    def next_song(self, e):
         self.song_index += 1
 
         if self.song_index >= len(self.songs):
@@ -343,11 +339,11 @@ class game:
 
         self.audio.src = self.songs[self.song_index]["src"]
 
-        await self.audio.play()
+        self.audio.play()
 
         self.page.update()
     
-    async def toggle_mute(self, e):
+    def toggle_mute(self, e):
 
         self.is_muted = not self.is_muted
 
@@ -506,6 +502,7 @@ def main(page):
     show_menu(page)
 
 
+# start app
 ft.run(main,assets_dir="assets")
 
 
