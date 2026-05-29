@@ -129,8 +129,6 @@ class game:
 
                                     ft.Container(height=50),
 
-                                    self.next_button,
-                                    self.mute_button,
                                 ],
 
                                 horizontal_alignment="center",
@@ -502,7 +500,7 @@ def main(page):
     show_menu(page)
 
 
-# start app
+
 ft.run(main,assets_dir="assets")
 
 
