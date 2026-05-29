@@ -78,12 +78,12 @@ class game:
         self.song_index = 0
 
         self.audio = fta.Audio(
-            src=self.songs[self.song_index]["src"],
-            autoplay=True,
-            volume=0.5,
-        )
+        src=self.songs[self.song_index]["src"],
+        autoplay=True,
+        volume=0.5,
+    )
 
-        page.overlay.append(self.audio)
+        self.page.add(self.audio)
 
         self.is_muted = False
 
@@ -137,7 +137,7 @@ class game:
                                 spacing=25,
                             ),
 
-                            padding=ft.padding.only(right=40, top=120),
+                            padding=ft.Padding.only(right=40, top=120),
                         ),
                     ],
 
@@ -226,7 +226,7 @@ class game:
         hand.pop(index)#fsdjk
         self.top_card = chosen_card
 
-        if chosen_card.value == "+2":
+        if chosen_card.value == "+2":#sdnjfik
             for i in range(2):
                 new_card = (self.draw_card())#gjfdn
 
